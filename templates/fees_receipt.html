@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+      <style>
+           body{
+           font-size:150%;
+           }
+
+           table, thead, tbody, th, td {
+           border: solid #000 !important;
+           border-width: 1px !important;
+           border-collapse:collapse;
+           padding:10px;
+        }
+
+       </style>
+
+    <title>Fee Receipt</title>
+  </head>
+<body>
+<div class="container"><br>
+    <center><h1>School Name</h1></center><br>
+    <h4>Name : DEVEN PARAB</h4>
+    <h4>Roll Number : 23</h4>
+    <h4>Standard : 9th</h4>
+    <h4>Division : A</h4>
+    <center>
+        <table style="text-align:center; width:100%">
+            <thead>
+            <tr>
+                <th>Months</th>
+                <th>Amount</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for param in params[0] %}
+            <tr>
+                <td style="border-right:5px !important;">{{param}}</td>
+                <td>Rs. 1000</td>
+                <td>Paid</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table><br>
+    </center>
+    <h4>Grand Total : Rs. {{params[1]}}</h4>
+</div>
+</body>
+</html>
