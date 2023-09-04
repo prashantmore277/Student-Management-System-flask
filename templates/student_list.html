@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+      <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+      <style>
+           th {
+           background-color: #039dfc;
+           color: white;
+           }
+       </style>
+
+    <title>Student List</title>
+  </head>
+  <body><br><br>
+  <div class="container">
+      <h2>Search students by Standard</h2>
+      <div class="panel-group">
+          <div class="panel panel-primary">
+              <div class="panel-heading">Student List<span style="padding-right:50px;"></span><a style="background-color: red; padding:5px; color: white;" href="/">Return To Menu</a></div>
+              <div class="panel-body">
+                  <form action="/get-student-list" method="POST">
+
+                      <label style="padding-right:10px;"><strong>Select Standard</strong></label>
+                      <select name="standard" required>
+                          <option disabled selected="true">-- Select Standard --</option>
+                          <option>1</option>
+                          <option>2</option>
+                          <option>3</option>
+                          <option>4</option>
+                          <option>5</option>
+                          <option>6</option>
+                          <option>7</option>
+                          <option>8</option>
+                          <option>9</option>
+                          <option>10</option>
+                      </select>
+
+                      <label style="padding-left:50px;padding-right:10px;"><strong>Select Division</strong></label>
+                      <select name="division">
+                          <option disabled selected="true">-- Select Division --</option>
+                          <option>A</option>
+                          <option>B</option>
+                      </select>
+                      <button style="margin-left:80px;" class="btn btn-success">Search</button><br><br><br><br>
+
+                      <table class="table table-bordered display">
+                          <thead>
+                          <tr>
+                              <th>Roll Number</th>
+                              <th>Student Name</th>
+                              <th>Annual Report</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          {% if data %}
+                          {% for value in data %}
+                              <tr>
+                                  <td>{{value['roll_no']}}</td>
+                                  <td>{{value['fname'] + '  ' + value['lname']}}</td>
+                                  <td><a href="/print-annual-report/{{value['roll_no']}}/{{params[0]}}/{{params[1]}}" class="btn btn-info" role="button">Print</a></td>
+                              </tr>
+                          {% endfor %}
+                          {% else %}
+                              <tr>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                              </tr>
+                          {% endif %}
+                          </tbody>
+                      </table>
+                  </form>
+                  <form action="/generate-roll-number" method="POST">
+                      {% if params %}
+                          <input type="hidden" value="{{params[0]}}" name="standard">
+                          <input type="hidden" value="{{params[1]}}" name="division">
+                      {% endif %}
+
+                      {% if message %}
+                      <center ><br><br>
+                          <h3 class="=alert alert-success">
+                              {{message}}
+                          </h3>
+                          {% endif %}
+                      </center><br><br>
+
+                      <center>
+                          <button class="btn btn-success">Generate Roll Numbers</button>
+                      </center>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+  <!--    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>-->
+  <script>
+    $(document).ready(function() {
+        $('table.display').DataTable();
+    } );
+  </script>
+  </body>
+</html>

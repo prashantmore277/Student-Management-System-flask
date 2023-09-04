@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+      <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+      <style>
+           th {
+           background-color: #039dfc;
+           color: white;
+           }
+
+           input[type=file] {
+                display: inline-block;
+                padding-left:15px;
+
+           }
+       </style>
+
+    <title>Upload Marks</title>
+  </head>
+  <body><br><br>
+  <div class="container">
+      <h2>Upload Student Marks</h2>
+      <div class="panel-group">
+          <div class="panel panel-primary">
+              <div class="panel-heading">Student List<span style="padding-right:50px;"></span><a style="background-color: red; padding:5px; color: white;" href="/">Return To Menu</a></div>
+              <div class="panel-body">
+                  <form action="/upload-marks" method="POST" enctype="multipart/form-data">
+
+                      <label style="padding-right:15px;"><strong>Select Standard</strong></label>
+                      <select name="standard" required>
+                          <option disabled selected="true">-- Select Standard --</option>
+                          <option>1</option>
+                          <option>2</option>
+                          <option>3</option>
+                          <option>4</option>
+                          <option>5</option>
+                          <option>6</option>
+                          <option>7</option>
+                          <option>8</option>
+                          <option>9</option>
+                          <option>10</option>
+                      </select>
+
+                      <label style="padding-left:15px;padding-right:10px;"><strong>Select Division</strong></label>
+                      <select name="division">
+                          <option disabled selected="true">-- Select Division --</option>
+                          <option>A</option>
+                          <option>B</option>
+                      </select>
+
+                      <label style="padding-left:15px;padding-right:10px;"><strong>Select Exam</strong></label>
+                      <select name="exam_name">
+                          <option disabled selected="true">-- Select Exam --</option>
+                          <option>1st Semester</option>
+                          <option>2nd Semester</option>
+                      </select>
+
+                      <input type="file" name="marks_csv"><br><br><br>
+                      <center><button style="margin-left:10px;" class="btn btn-success">Upload Marks</button></center><br><br><br><br>
+                  </form>
+
+                      <table class="table table-bordered display">
+                          <thead>
+                              <tr>
+                                  {% if columns %}
+                                      <th>Roll Numbers</th>
+                                  {% for column in columns %}
+                                      <th>{{column}}</th>
+                                  {% endfor %}
+                                      <th>View Results</th>
+                                  {% endif %}
+                              </tr>
+                          </thead>
+                          <tbody>
+                                  {% if results %}
+                                  <h1>Results for - </h1>
+                                  {% for key, value in results.items() %}
+                                      <tr>
+                                          <td>{{key}}</td>
+                                          <td>{{value['ENGLISH']}}</td>
+                                          <td>{{value['MATHS']}}</td>
+                                          <td>{{value['SCIENCE']}}</td>
+                                          <td>{{value['HISTORY']}}</td>
+                                          <td>{{value['TOTAL MARKS']}}</td>
+                                          <td>{{value['GRADE']}}</td>
+                                          <td>{{value['PERCENTAGE']}}</td>
+                                          <td><a href="/view-result/{{key}}/{{params[0]}}/{{params[1]}}/{{params[2]}}" class="btn btn-info" role="button">View Result</a></td>
+                                      </tr>
+                                  {% endfor %}
+                                  {% endif %}
+                          </tbody>
+                      </table><br>
+
+                       {% if params %}
+                       <center>
+                           <form action="/print-all-results" method="POST">
+                               <input type="hidden" value="{{params}}" name="params">
+                               <button class="btn btn-success">Print all Results</button>
+                           </form>
+                       </center>
+                      <br><br>
+                       {% endif %}
+
+                      <table class="table table-bordered display">
+                          <thead>
+                              <tr>
+                                  {% if columns %}
+                                     <th>Roll Numbers</th>
+                                  {% for column in columns %}
+                                      <th>{{column}}</th>
+                                  {% endfor %}
+                                  {% endif %}
+                              </tr>
+                          </thead>
+                          <tbody>
+                                  {% if toppers %}
+                                  <h1>Top 3 Students</h1>
+                                  {% for key, value in toppers.items() %}
+                                      <tr>
+                                          <td>{{key}}</td>
+                                          <td>{{value['ENGLISH']}}</td>
+                                          <td>{{value['MATHS']}}</td>
+                                          <td>{{value['SCIENCE']}}</td>
+                                          <td>{{value['HISTORY']}}</td>
+                                          <td>{{value['TOTAL MARKS']}}</td>
+                                          <td>{{value['GRADE']}}</td>
+                                          <td>{{value['PERCENTAGE']}}</td>
+                                      </tr>
+                                  {% endfor %}
+                                  {% endif %}
+                          </tbody>
+                      </table>
+
+                      <table class="table table-bordered display">
+                          <thead>
+                              <tr>
+                                  {% if columns %}
+                                     <th>Roll Numbers</th>
+                                  {% for column in columns %}
+                                      <th>{{column}}</th>
+                                  {% endfor %}
+                                  {% endif %}
+                              </tr>
+                          </thead>
+                          <tbody>
+                                  {% if failed %}
+                                  <h1>List of Failed Students</h1>
+                                  {% for key, value in failed.items() %}
+                                      <tr>
+                                          <td>{{key}}</td>
+                                          <td>{{value['ENGLISH']}}</td>
+                                          <td>{{value['MATHS']}}</td>
+                                          <td>{{value['SCIENCE']}}</td>
+                                          <td>{{value['HISTORY']}}</td>
+                                          <td>{{value['TOTAL MARKS']}}</td>
+                                          <td>{{value['GRADE']}}</td>
+                                          <td>{{value['PERCENTAGE']}}</td>
+                                      </tr>
+                                  {% endfor %}
+                                  {% endif %}
+                          </tbody>
+                      </table><br><br><br>
+
+
+                      {% if params %}
+                      <center>
+                          <h1>Number of Passed vs Failed Students</h1>
+                          <img src="{{url_for('static', filename='images/' + params[0] + '-1.png' )}}" width="500" height="400">
+                      </center><br><br><br>
+
+                      <center>
+                          <h1>Number of Passed & Failed students for Each Subjects</h1>
+                          <img src="{{url_for('static', filename='images/Image-2.png')}}" width="500" height="400">
+                      </center><br><br><br>
+
+                      <center>
+                          <h1>Grades of Students</h1>
+                          <img src="{{url_for('static', filename='images/' + params[0] + '-3.png')}}" width="400" height="400">
+                      </center><br><br><br>
+                      {% endif %}
+
+
+              </div>
+          </div>
+      </div>
+  </div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+  <!--    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>-->
+  <script>
+    $(document).ready(function() {
+        $('table.display').DataTable();
+    } );
+  </script>
+
+  </body>
+</html>

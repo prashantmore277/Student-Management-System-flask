@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+      <style>
+           body{
+           font-size:150%;
+           }
+
+           table, thead, tbody, th, td {
+           border: solid #000 !important;
+           border-width: 1px !important;
+           border-collapse:collapse;
+           padding:10px;
+        }
+
+       </style>
+
+    <title>View Results</title>
+  </head>
+<body>
+<div class="container"><br>
+    <center><h1>School Name</h1></center><br><br><br>
+    {% if params %}
+    <h4>Name : {{params[3]}}</h4>
+    <h4>Roll Number : {{params[4]}}</h4>
+    <h4>Standard : {{params[5]}}</h4>
+    <h4>Division : {{params[6]}}</h4>
+    <h4>Exam : {{params[2]}}</h4><br>
+    {% endif %}
+    <center>
+        <table style="text-align:center; width:100%">
+            <thead>
+            <tr>
+                <th>Subjects</th>
+                <th>Marks Out Of</th>
+                <th>Marks Required</th>
+                <th>Marks Obtained</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for value in data %}
+            <tr>
+                <td style="border-right:5px !important;">{{value['subjects']}}</td>
+                <td>{{value['Marks Out Of']}}</td>
+                <td>{{value['Marks Required']}}</td>
+                <td>{{value['Marks Obtained']}}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table><br><br>
+    </center>
+    {% if params %}
+    <h4>Grade : {{params[1]}}</h4>
+    <h4>Percentage : {{params[0]}}% </h4>
+    {% endif %}
+</div>
+</body>
+</html>

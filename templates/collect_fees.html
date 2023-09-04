@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+      <style>
+           th {
+           background-color: #039dfc;
+           color: white;
+           }
+       </style>
+
+    <title>Collect Fees</title>
+  </head>
+  <body><br><br>
+  <div class="container">
+      <h2>Search students by Standard</h2>
+      <div class="panel-group">
+          <div class="panel panel-primary">
+              <div class="panel-heading">Student List<span style="padding-right:50px;"></span><a style="background-color: red; padding:5px; color: white;" href="/">Return To Menu</a></div>
+              <div class="panel-body">
+                  <label style="padding-right:10px;"><strong>Select Standard</strong></label>
+                  <select name="standard" required id="dropdown1">
+                      <option disabled selected="true">-- Select Standard --</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                  </select>
+
+                  <label style="padding-left:50px;padding-right:10px;"><strong>Select Division</strong></label>
+                  <select name="division" id="dropdown2">
+                      <option disabled selected="true">-- Select Division --</option>
+                      <option value="A">A</option>
+                      <option value="B">B</option>
+                  </select>
+                  <button style="margin-left:80px;" class="btn btn-success">Search</button><br><br><br><br>
+
+                  <table id="table" class="table table-bordered">
+                      <thead>
+                      <tr>
+                          <th>Roll Number</th>
+                          <th>Student Name</th>
+                          <th>Collect Fees</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+
+                      </tbody>
+                  </table>
+                  <div class="modal fade" id="myModal" role="dialog">
+                      <div class="modal-dialog modal-lg">
+                          <div class="modal-content">
+                              <div class="modal-header">
+                                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                              </div>
+                              <form action="/collect-fees" method="POST">
+                                  <div class="modal-body">
+                                      <label style="padding-right:10px;"><h4><strong>Select Months</strong></h4></label>
+                                      <ul id="months">
+                                      </ul><br>
+                                      <label style=""><strong>Amount Due:&nbsp;&nbsp;&nbsp;</strong></label>
+                                      <input style="padding-right:10px;" type="number" id="amount" value="0" name="amount" readonly>
+                                  </div>
+                                  <div class="modal-footer" style="justify-content: center !important;">
+                                      <center><button class="btn btn-success">Collect Fees</button></center>
+                                  </div>
+                              </form>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" ></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" ></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  </body>
+</html>
+
+<script>
+    $(document).ready(function(event){
+
+            $( "#dropdown1, #dropdown2" ).change(function() {
+
+           <!-- Storing the Standard & Division value inside the variables -->
+                 var standard = $("#dropdown1").val();
+                 var division = $("#dropdown2").val();
+
+                 if(standard && division){
+
+           <!-- Making AJAX call to get the list of students according to their standard & division -->
+                    $.ajax({
+                    type : "POST",
+                    url : "/fees-records",
+                    data: {standard:standard, division:division},
+                    success: function(results) {
+                        console.log(results);
+
+           <!-- Append the details of students to the Table -->
+                        $.each(results, function(k, v){
+                            $('#table tbody').append("<tr><td>" + results[k][0] + "</td><td>" + results[k][1] + "</td><td>" + "<button type='button' class='btn btn-info' data-toggle='modal' data-target='#myModal'  data-id='" + results[k][2] + "'>Collect Fees</button></td></tr>");
+                      });
+                  }
+              });
+
+            id = []
+            $('#myModal').on('show.bs.modal', function(e) {
+
+               <!-- Storing the Student id inside the variable -->
+                    var student_id = $(e.relatedTarget).data('id');
+                    id.push(student_id)
+
+               <!-- Ajax call to get the details of fees for selected student -->
+                    $.ajax({
+                    type : "GET",
+                    url : "/get-student-fees/" + student_id,
+                    success: function(results) {
+
+               <!-- Converting the return string into a array -->
+                        var months = results[0][0].split(",");
+
+               <!-- Adding list of months as Checkbox -->
+                        for (i in months){
+                            $("#months").append("<input class='month' name='check' type='checkbox' value='" + months[i] + "'><b style='padding-left:10px; font-size:15px;'>" + months[i] + "</b><br>");
+                       }
+                    }
+                });
+            });
+
+
+    <!-- Function to change the amount according to the number of months-->
+        $(document).on('change','input[name="check"]',function() {
+                var amount = $('#amount').val();
+                amount = parseInt(amount)
+                var selected = [];
+                if(this.checked) {
+                       amount += 1000
+                       $('#amount').attr('value', amount)
+                  }
+                else{
+                       amount -= 1000
+                       $('#amount').attr('value', amount)
+                }
+        });
+
+    <!--  Adding hidden attributes to the Form when posting -->
+            $('.btn-success').click(function() {
+
+                    var months = [];
+                    $.each($("input[name='check']:checked"), function(){
+                    months.push($(this).val());
+               });
+
+                    $('form').append("<input type='hidden' name='student_id' value='" + id + "' >");
+                    $('form').append("<input type='hidden' name='months' value='" + months + "' >");
+                    $("input[name='check']").remove();
+            });
+
+         }
+      });
+  });
+</script>
